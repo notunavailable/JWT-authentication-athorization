@@ -2,15 +2,17 @@
 
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 
 const db = require("./app/models");
 const Role = db.role;
-const dbConfig = require("./app/config/db.config");
+const { DB, PORT, HOST } = process.env;
 
-db.mongoose
-    .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+exports.connect = () => {
+    mongoose
+    .connect(DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
@@ -22,6 +24,7 @@ db.mongoose
         console.error("Connection error", err);
         process.exit();
     })
+}
 
 var corsOptions = {
     origin: "http://localhost:8081"
@@ -44,9 +47,9 @@ require('./app/routes/auth.routes') (app);
 require('./app/routes/user.routes')(app);
 
 //set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const PORT1 = PORT || 8080;
+app.listen(PORT1, () => {
+    console.log(`Server is running on port ${PORT1}`);
 });
 
 function initial() {
